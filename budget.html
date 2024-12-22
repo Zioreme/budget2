@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Manager</title>
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --bg-color-dark: #121212;
+            --text-color-dark: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        header {
+            padding: 1rem;
+            text-align: center;
+            background-color: #6200ea;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .toggle-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            background-color: #6200ea;
+            color: white;
+            cursor: pointer;
+        }
+
+        .toggle-btn:hover {
+            background-color: #3700b3;
+        }
+
+        canvas {
+            max-width: 100%;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Budget Manager</h1>
+    </header>
+
+    <div class="container">
+        <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+        <h2>Track Your Finances</h2>
+        <p>Enter your income, expenses, and savings to visualize your budget:</p>
+
+        <form id="budget-form">
+            <label>
+                Income: <input type="number" id="income" required>
+            </label>
+            <br><br>
+            <label>
+                Expenses: <input type="number" id="expenses" required>
+            </label>
+            <br><br>
+            <label>
+                Savings: <input type="number" id="savings" required>
+            </label>
+            <br><br>
+            <button type="submit">Generate Chart</button>
+        </form>
+
+        <canvas id="budgetChart" width="400" height="400"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const form = document.getElementById('budget-form');
+        const ctx = document.getElementById('budgetChart').getContext('2d');
+        let budgetChart;
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+
+            if (budgetChart) budgetChart.destroy();
+
+            budgetChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Income', 'Expenses', 'Savings'],
+                    datasets: [{
+                        data: [income, expenses, savings],
+                        backgroundColor: ['#4caf50', '#f44336', '#ffeb3b'],
+                    }],
+                },
+                options: {
+                    responsive: true,
+                },
+            });
+        });
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
